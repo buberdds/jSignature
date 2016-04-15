@@ -877,7 +877,7 @@ function jSignatureClass(parent, options, instanceExtensions) {
 			$canvas.bind('mouseup.'+apinamespace, drawEndHandler);
 			$canvas.bind('mousedown.'+apinamespace, drawStartHandler);
 		} else {
-			canvas.ontouchstart = function(e) {
+			canvas.addEventListener('touchstart', function(e) {
 				canvas.onmousedown = canvas.onmouseup = canvas.onmousemove = undef;
 
 				this.fatFingerCompensation = (
@@ -887,10 +887,15 @@ function jSignatureClass(parent, options, instanceExtensions) {
 
 				drawStartHandler(e);
 
-				canvas.ontouchend = drawEndHandler;
-				canvas.ontouchstart = drawStartHandler;
-				canvas.ontouchmove = drawMoveHandler;
-			};
+				this.addEventListener('touchmove', function(e) {
+					drawMoveHandler(e);
+				});
+
+				this.addEventListener('touchend', function(e) {
+					drawEndHandler(e);
+				});
+			});
+
 			canvas.onmousedown = function(e) {
 				canvas.ontouchstart = canvas.ontouchend = canvas.ontouchmove = undef;
 
